@@ -6,8 +6,7 @@ A high-performance, resilient, and production-ready **Email Scheduling Service &
 
 ## Table of Contents
 
-- [Demo Video Walkthrough Script](#demo-video-walkthrough-script)
-- [Deployment Guide (Railway & Vercel)](#deployment-guide-railway--vercel)
+- [Live Deployment](#live-deployment)
 - [System Architecture](#system-architecture)
   - [Architecture Diagram](#architecture-diagram)
   - [How Scheduling Works](#how-scheduling-works)
@@ -30,17 +29,9 @@ A high-performance, resilient, and production-ready **Email Scheduling Service &
 
 ---
 
-## Demo Video Walkthrough Script
+## Live Deployment
 
-A complete, natural 5-minute speaking script with screen actions and timestamp cues is available in:
-👉 **[DEMO_SCRIPT.md](./DEMO_SCRIPT.md)**
-
----
-
-## Deployment Guide (Railway & Vercel)
-
-Step-by-step production setup for deploying the Express + BullMQ backend to **Railway** and the React frontend to **Vercel** is detailed in:
-👉 **[DEPLOYMENT.md](./DEPLOYMENT.md)**
+🌐 **Live Application**: [https://reachinbox-email-scheduler-zeta-sepia.vercel.app/](https://reachinbox-email-scheduler-zeta-sepia.vercel.app/)
 
 ---
 
