@@ -128,8 +128,29 @@ export function ComposeModal({ open, onOpenChange }: ComposeModalProps) {
       title="Compose email campaign"
       description="Schedule a bulk email campaign with rate limiting."
       size="lg"
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 12, width: '100%' }}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => handleClose(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="compose-form"
+            variant="primary"
+            loading={createCampaign.isPending}
+            disabled={leads.length === 0}
+            id="schedule-btn"
+          >
+            Schedule {leads.length > 0 ? `${leads.length} emails` : 'emails'}
+          </Button>
+        </div>
+      }
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="compose-form">
+      <form id="compose-form" onSubmit={handleSubmit(onSubmit)} className="compose-form">
         {/* Subject */}
         <div className="form-field">
           <label htmlFor="subject" className="form-label">Subject</label>
@@ -147,7 +168,7 @@ export function ComposeModal({ open, onOpenChange }: ComposeModalProps) {
           <label htmlFor="body" className="form-label">Message body</label>
           <textarea
             id="body"
-            rows={5}
+            rows={3}
             className={`form-input form-textarea ${errors.body ? 'input-error' : ''}`}
             placeholder="Write your email body here..."
             {...register('body')}
@@ -231,24 +252,6 @@ export function ComposeModal({ open, onOpenChange }: ComposeModalProps) {
             />
             {errors.hourlyLimit && <span className="form-error">{errors.hourlyLimit.message}</span>}
           </div>
-        </div>
-
-        <div className="compose-footer">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => handleClose(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            loading={createCampaign.isPending}
-            disabled={leads.length === 0}
-            id="schedule-btn"
-          >
-            Schedule {leads.length > 0 ? `${leads.length} emails` : 'emails'}
-          </Button>
         </div>
       </form>
     </Modal>

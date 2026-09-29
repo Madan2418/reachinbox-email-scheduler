@@ -1,4 +1,3 @@
-import { env } from '../config/env.js';
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
@@ -11,3 +10,4 @@ export default defineConfig({
   verbose: true,
   strict: true,
 });
+

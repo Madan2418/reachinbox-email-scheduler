@@ -5,10 +5,12 @@ import { createChildLogger } from './logger.js';
 const log = createChildLogger('redis');
 
 function createRedisClient(name: string): Redis {
+  const isTLS = env.REDIS_URL.startsWith('rediss://');
   const client = new Redis(env.REDIS_URL, {
     maxRetriesPerRequest: null, // required by BullMQ
     enableReadyCheck: false,
     lazyConnect: true,
+    ...(isTLS ? { tls: { rejectUnauthorized: false } } : {}),
   });
 
   client.on('connect', () => log.info({ client: name }, 'Redis connected'));

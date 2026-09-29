@@ -44,7 +44,7 @@ export async function ensureIndex(): Promise<void> {
         body: { type: 'text' },
         status: { type: 'keyword' },
         scheduledAt: { type: 'date' },
-        sentAt: { type: 'date', null_value: 'null' },
+        sentAt: { type: 'date' },
       },
     },
   });
