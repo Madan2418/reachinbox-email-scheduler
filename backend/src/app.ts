@@ -33,6 +33,15 @@ export function createApp() {
   app.use(express.json({ limit: '10mb' }));
   app.use(cookieParser());
 
+  // Root route
+  app.get('/', (_req, res) => {
+    if (env.FRONTEND_URL && env.FRONTEND_URL.startsWith('http')) {
+      res.redirect(env.FRONTEND_URL);
+    } else {
+      res.json({ service: 'reachinbox-backend', status: 'running', health: '/health' });
+    }
+  });
+
   // Health check (no auth)
   app.get('/health', async (_req, res) => {
     const [db, redis, es] = await Promise.all([

@@ -36,14 +36,18 @@ export async function googleCallback(
       name: user.name,
     });
 
+    const isProd = env.NODE_ENV === 'production';
     res.cookie('token', token, {
       httpOnly: true,
-      secure: env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.redirect(`${env.FRONTEND_URL}/`);
+    const targetUrl = env.FRONTEND_URL && env.FRONTEND_URL.startsWith('http')
+      ? `${env.FRONTEND_URL.replace(/\/+$/, '')}/`
+      : '/';
+    res.redirect(targetUrl);
   } catch (err) {
     log.error({ err }, 'Google OAuth callback failed');
     next(err);
@@ -55,6 +59,11 @@ export function getMe(req: Request, res: Response): void {
 }
 
 export function logout(_req: Request, res: Response): void {
-  res.clearCookie('token');
+  const isProd = env.NODE_ENV === 'production';
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
+  });
   res.json({ ok: true });
 }
