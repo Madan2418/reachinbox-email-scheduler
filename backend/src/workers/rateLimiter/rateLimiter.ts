@@ -1,14 +1,41 @@
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { Redis } from 'ioredis';
 import { hourKey, currentHourWindowEnd } from '../../lib/time.js';
 import { env } from '../../config/env.js';
 
-// ESM-compatible __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const LUA_SCRIPT = readFileSync(join(__dirname, 'reserve.lua'), 'utf-8');
+const LUA_SCRIPT = `
+local limit     = tonumber(ARGV[1])
+local minDelay  = tonumber(ARGV[2])
+local nowMs     = tonumber(ARGV[3])
+local windowEnd = tonumber(ARGV[4])
+
+-- Check and increment hourly counter
+local count = redis.call('INCR', KEYS[1])
+if count == 1 then
+  redis.call('EXPIRE', KEYS[1], 7200)
+end
+
+if count > limit then
+  -- Undo the increment and return limit hit
+  redis.call('DECR', KEYS[1])
+  local waitMs = windowEnd - nowMs
+  return {'HOURLY_LIMIT', tostring(waitMs)}
+end
+
+-- Check minimum delay between sends
+local nextSlot = tonumber(redis.call('GET', KEYS[2])) or 0
+local startMs  = math.max(nextSlot, nowMs)
+
+if startMs > nowMs then
+  -- Can't send yet, undo increment
+  redis.call('DECR', KEYS[1])
+  return {'TOO_SOON', tostring(startMs - nowMs)}
+end
+
+-- Reserve the slot
+redis.call('SET', KEYS[2], tostring(startMs + minDelay), 'PX', 7200000)
+
+return {'OK', '0'}
+`;
 
 export type ReserveResult =
   | { status: 'OK'; waitMs: 0 }

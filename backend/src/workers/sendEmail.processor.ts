@@ -2,7 +2,7 @@ import type { Job } from 'bullmq';
 import { DelayedError } from 'bullmq';
 import { db } from '../db/client.js';
 import { emails, campaigns, senders } from '../db/schema.js';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, inArray } from 'drizzle-orm';
 import { redis } from '../lib/redis.js';
 import { createChildLogger } from '../lib/logger.js';
 import { sendEmail } from '../integrations/smtp.js';
@@ -33,7 +33,7 @@ export async function sendEmailProcessor(job: Job<SendEmailJobData>): Promise<vo
   }
 
   // Idempotency layer 1: already handled
-  if (email.status !== 'scheduled') {
+  if (email.status === 'sent' || email.status === 'failed') {
     log.info({ emailId, status: email.status }, 'Email already handled, skipping');
     return;
   }
@@ -101,7 +101,7 @@ export async function sendEmailProcessor(job: Job<SendEmailJobData>): Promise<vo
   const claimed = await db
     .update(emails)
     .set({ status: 'processing', attempts: email.attempts + 1 })
-    .where(and(eq(emails.id, emailId), eq(emails.status, 'scheduled')))
+    .where(and(eq(emails.id, emailId), inArray(emails.status, ['scheduled', 'processing'])))
     .returning({ id: emails.id });
 
   if (claimed.length === 0) {
@@ -129,6 +129,12 @@ export async function sendEmailProcessor(job: Job<SendEmailJobData>): Promise<vo
 
     log.info({ emailId, to: email.toEmail }, 'Email sent successfully');
   } catch (err) {
+    // Reset status back to 'scheduled' so BullMQ retry can claim it again
+    await db
+      .update(emails)
+      .set({ status: 'scheduled' })
+      .where(eq(emails.id, emailId));
+
     // BullMQ will retry with exponential backoff
     log.error({ err, emailId }, 'Failed to send email, will retry');
     throw err;

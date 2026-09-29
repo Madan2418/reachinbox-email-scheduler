@@ -6,6 +6,8 @@ A high-performance, resilient, and production-ready **Email Scheduling Service &
 
 ## Table of Contents
 
+- [Demo Video Walkthrough Script](#demo-video-walkthrough-script)
+- [Deployment Guide (Railway & Vercel)](#deployment-guide-railway--vercel)
 - [System Architecture](#system-architecture)
   - [Architecture Diagram](#architecture-diagram)
   - [How Scheduling Works](#how-scheduling-works)
@@ -25,6 +27,20 @@ A high-performance, resilient, and production-ready **Email Scheduling Service &
 - [Bull Board Monitoring](#bull-board-monitoring)
 - [API Reference](#api-reference)
 - [Tech Stack](#tech-stack)
+
+---
+
+## Demo Video Walkthrough Script
+
+A complete, natural 5-minute speaking script with screen actions and timestamp cues is available in:
+👉 **[DEMO_SCRIPT.md](./DEMO_SCRIPT.md)**
+
+---
+
+## Deployment Guide (Railway & Vercel)
+
+Step-by-step production setup for deploying the Express + BullMQ backend to **Railway** and the React frontend to **Vercel** is detailed in:
+👉 **[DEPLOYMENT.md](./DEPLOYMENT.md)**
 
 ---
 

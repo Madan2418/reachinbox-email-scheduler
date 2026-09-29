@@ -66,7 +66,7 @@ export async function createEtherealAccount(): Promise<{
   const account = await nodemailer.createTestAccount();
   log.info({ user: account.user }, 'Ethereal account created');
   return {
-    email: account.web,
+    email: account.user,
     pass: account.pass,
     host: account.smtp.host,
     port: account.smtp.port,
