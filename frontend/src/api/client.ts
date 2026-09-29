@@ -11,6 +11,18 @@ import type {
 
 const BASE = '/api';
 
+// On client load, capture token if passed via OAuth redirect
+if (typeof window !== 'undefined') {
+  const params = new URLSearchParams(window.location.search);
+  const tokenFromUrl = params.get('token');
+  if (tokenFromUrl) {
+    localStorage.setItem('auth_token', tokenFromUrl);
+    params.delete('token');
+    const cleanSearch = params.toString() ? `?${params.toString()}` : '';
+    window.history.replaceState({}, '', `${window.location.pathname}${cleanSearch}`);
+  }
+}
+
 class ApiError extends Error {
   constructor(
     public readonly code: string,
@@ -23,10 +35,12 @@ class ApiError extends Error {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
   const res = await fetch(`${BASE}${path}`, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...init?.headers,
     },
     ...init,
@@ -56,7 +70,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   auth: {
     me: () => request<{ user: User }>('/auth/me'),
-    logout: () => request<{ ok: boolean }>('/auth/logout', { method: 'POST' }),
+    logout: () => {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_token');
+      }
+      return request<{ ok: boolean }>('/auth/logout', { method: 'POST' });
+    },
     googleUrl: () => `${BASE}/auth/google`,
   },
 

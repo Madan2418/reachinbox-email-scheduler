@@ -19,7 +19,10 @@ declare global {
 }
 
 export function authMiddleware(req: Request, _res: Response, next: NextFunction): void {
-  const token = req.cookies?.['token'] as string | undefined;
+  const authHeader = req.headers.authorization;
+  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : undefined;
+  const token = (req.cookies?.['token'] as string | undefined) || bearerToken;
+
   if (!token) {
     next(new UnauthorizedError('No session token'));
     return;

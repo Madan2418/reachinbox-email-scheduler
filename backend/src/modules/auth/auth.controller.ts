@@ -75,7 +75,7 @@ export async function googleCallback(
       }
     }
 
-    const targetUrl = `${frontendOrigin.replace(/\/+$/, '')}/`;
+    const targetUrl = `${frontendOrigin.replace(/\/+$/, '')}/?token=${encodeURIComponent(token)}`;
     res.redirect(targetUrl);
   } catch (err) {
     log.error({ err }, 'Google OAuth callback failed');
