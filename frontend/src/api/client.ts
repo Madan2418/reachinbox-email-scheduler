@@ -45,6 +45,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     );
   }
 
+  const contentType = res.headers.get('content-type') ?? '';
+  if (!contentType.includes('application/json')) {
+    throw new ApiError('INVALID_RESPONSE', 'Server returned non-JSON response', res.status);
+  }
+
   return res.json() as Promise<T>;
 }
 

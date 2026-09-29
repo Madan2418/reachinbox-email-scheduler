@@ -1,4 +1,4 @@
-import { useState, Suspense, lazy } from 'react';
+import { useState } from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { motion } from 'framer-motion';
 import { Header } from '../components/layout/Header';
@@ -8,10 +8,7 @@ import { ComposeModal } from '../components/features/compose/ComposeModal';
 import { SenderLimitsPanel } from '../components/features/limits/SenderLimitsPanel';
 import { SearchBar } from '../components/features/search/SearchBar';
 import { Button } from '../components/ui/Button';
-
-const DashboardEnvelopeScene = lazy(() =>
-  import('../components/three/EnvelopeScene').then((m) => ({ default: m.DashboardEnvelopeScene }))
-);
+import { DashboardEnvelopeScene } from '../components/three/EnvelopeScene';
 
 export default function DashboardPage() {
   const [composeOpen, setComposeOpen] = useState(false);
@@ -21,9 +18,7 @@ export default function DashboardPage() {
     <div className="dashboard">
       {/* Subtle flying mail background */}
       <div className="dashboard-bg-canvas">
-        <Suspense fallback={null}>
-          <DashboardEnvelopeScene />
-        </Suspense>
+        <DashboardEnvelopeScene />
       </div>
 
       <Header />
