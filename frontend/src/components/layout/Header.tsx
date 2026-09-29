@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useMe, useLogout, useSlackStatus } from '../../api/hooks';
 import { api } from '../../api/client';
+import { ReachInboxLogo } from '../ui/Logo';
 
 export function Header() {
   const { data } = useMe();
@@ -17,11 +18,7 @@ export function Header() {
     >
       <div className="header-brand">
         <div className="header-logo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect x="2" y="5" width="20" height="14" rx="3" fill="var(--accent)" opacity="0.15"/>
-            <rect x="2" y="5" width="20" height="14" rx="3" stroke="var(--accent)" strokeWidth="1.5"/>
-            <path d="M2 9L12 15L22 9" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
+          <ReachInboxLogo size={26} />
         </div>
         <span className="header-brand-name">ReachInbox</span>
       </div>

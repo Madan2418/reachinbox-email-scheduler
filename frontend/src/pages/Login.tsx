@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { api } from '../api/client';
 import { EnvelopeScene } from '../components/three/EnvelopeScene';
+import { ReachInboxLogo } from '../components/ui/Logo';
 
 export default function LoginPage() {
   // Reset body/html to white
@@ -68,16 +69,10 @@ export default function LoginPage() {
           {/* Logo */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            width: 56, height: 56, borderRadius: 16, margin: '0 auto 20px',
-            background: 'rgba(51,70,255,0.08)',
-            border: '1.5px solid rgba(51,70,255,0.2)',
-            boxShadow: '0 0 20px rgba(51,70,255,0.12)',
+            width: 52, height: 52, margin: '0 auto 20px',
+            filter: 'drop-shadow(0 6px 16px rgba(37,99,235,0.25))',
           }}>
-            <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-              <rect x="3" y="7" width="30" height="22" rx="5" fill="#3346ff" opacity="0.15"/>
-              <rect x="3" y="7" width="30" height="22" rx="5" stroke="#3346ff" strokeWidth="2"/>
-              <path d="M3 13L18 23L33 13" stroke="#3346ff" strokeWidth="2.5" strokeLinecap="round"/>
-            </svg>
+            <ReachInboxLogo size={52} />
           </div>
 
           <h1 style={{
